@@ -1,0 +1,197 @@
+<!DOCTYPE html lang="en">
+<html>
+    <head>
+        <link rel="stylesheet" href="css/style.css" />
+        <title>GL Flower</title>
+    </head>
+
+    <body>
+        <div id="controls">
+            <span>LOCATION-BASED SEED</span>
+
+            <select onchange="setCity()" id="city-select">
+                <option value="-1">----</option>
+                <option value="0">New Orleans</option>
+                <option value="1">San Francisco</option>
+                <option value="2">New York</option>
+                <option value="3">Mexico City</option>
+                <option value="4">Mumbai</option>
+                <option value="5">Sao Paulo</option>
+                <option value="6">Tokyo</option>
+            </select>
+
+            lat: <input type="text" id="input-lat" value="29.9511"/>
+            long: <input type="text" id="input-long" value="90.0715"/>
+            <input type="button" value="Set Seed" onclick="setSeed()" />
+            <br />
+        </div>
+            <canvas id="stage" width="500" height="800"></canvas>
+        
+
+        <div id="text-container">
+
+        <div id="desc">
+            <h1>Randomized Location-based Flowers with WebGL</h1>
+
+            <p>
+                This demo procedurally generates flowers using pure WebGL. If you mouse over the canvas, you can rotate the model directly by moving the mouse horizontally. Mouse out to resume animation.
+            </p>
+            <p>
+                To get a new flower, either enter coordinates, select a city from the drop-down, or just refresh the page.
+            </p>
+            <p>
+                You can optionally enter a set of latitude / longitude coordinates to serve as the seed. The same seed is guaranteed to always generate the same flower, so something like this could be used to provide an extra layer of detail / visual interest for location-based applications.
+            </p>
+            <p>
+                Pretty much all of the code was written from scratch, with the only external code being the <a href="http://glmatrix.net/docs/index.html">glMatrix</a> vector/matrix library.
+            </p>
+
+            <p>
+                This was built over the course of about a week, though I didn't work on it every day during that time.
+                
+                If you'd like to get a feel for how the project progressed, please scroll through the below release notes below to see what changed with each update. 
+            </p>
+
+        </div>
+
+
+        <div id="notes">
+
+            <p>
+                <a href="09/">v0.9: Making things prettier</a>
+                
+                <ul>
+                    <li>
+                        Added random color generation to my rand class, to support random colors for the petals.
+                    </li>
+                    <li>
+                        Changed the petal shader to make use of random colors.
+                    </li>
+                    <li>
+                        Modified the leaf shader to add the suggestion of veins on the underside.
+                    </li>
+                    <li>
+                        Changed the background color to a medium gray for easier viewing.
+                    </li>
+                    <li>
+                        Fixed an oversight by which the stem shader wasn't being affected by lighting.
+                    </li>
+                </ul>
+                
+                   
+            </p>
+
+            <hr />
+            <p>
+                <a href="08/">v0.8: Lat/Long seed values.</a> 
+                
+                I've added in inputs to set the random seed based on lat/long coordinates
+            </p>
+            <hr />
+            <p>
+                <a href="07/">v0.7: Colors!</a> 
+                    
+                Added rudimentary shaders
+
+            </p>
+
+
+            <hr />
+            <p>
+                <a href="06/">v0.6: Full Flower</a> 
+                
+                Finally putting it all together into a full flower. Everything is still colored via normals- next step is to improve the shaders.
+
+                <ul>
+                    <li>Created Node3d class to serve as parent nodes</li>
+                    <li>refactored DynamicGeo to be a subclass of Node3d</li>
+                    <li>Created Flower class containing a stem (with leaves), petals, and a center</li>
+                    <li>Made moving the mouse vertically within the canvas control the pitch of the flower (better for seeing into the flower itself)</li>
+                </ul>
+
+            </p>
+            <hr />
+            <p>
+                <a href="05/">v0.5: Lathed Geometry</a> 
+                
+                added LathedGeo class to create geometry by lathing a curve. I'll be using this fo the central parts of the flower. <br /><br />
+
+                This is again being rendered with normals for color.
+
+            </p>
+            <hr />
+            <p>
+                <a href="04/">v0.4: Leaves and Petals</a>
+                <ul>
+                    <li>Refactored leaf class into base ComplexCurveModel class</li>
+                    <li>Extended ComplexCurveModel for both leaves and petals</li>
+                    <li>added in proper normal calculation.</li>
+
+                </ul>
+
+                Shown here are petals (top two rows) and leaves (bottom two rows). In both cases, the backfaces are rendered with either green (leaves) or red(petals), and the front faces are rendered with the color that corresponds to the normal. <br /><br />
+
+                If you mouse over the canvas, you can rotate all the models by moving your mouse left and right. Mouse out to resume animation around the Y axis.
+
+
+            </p>
+            <hr />
+            <p>
+                <a href="03/">v0.3: Stems and starting in on lighting</a> 
+                
+                Adding leaves to the stem, plus laying the groundwork for lighting.
+            </p>
+            <hr />
+            <p>
+                <a href="02/">v0.2: Fully 3d Leaves</a> 
+                
+                Big update to leaf geometry generation, with curvature along all three axes.
+            </p>
+            <hr />
+            <p>
+                <a href="01/">v0.1: Getting started</a>
+                
+                Rough cut of the basic scene and model hierarchy. 
+            </p>
+
+            <hr />
+
+            <p>
+                Notable files:
+                
+                <ul>
+            <li><strong>Scene:</strong> sets up a WebGL context.</li>
+
+            <li><strong>DynamicModel:</strong> base class for a "dynamic" model which in this case means a model with procedurally generated geometry. The random generation is based on a given seed value, so can be persistent if that's what you want</li>
+
+            <li><strong>Petal:</strong> A sub-class of DynamicModel that generates a leaf-shaped mesh and colors it from red to green away from the spine. </li>
+
+            <li><strong>Curves</strong> Implements Bezier curves, both quadratic and cubic (two cubic curves are the basis for the shape of each leaf)</li>
+
+            <li><strong>rand</strong> Implements a linear congruental random number generator with the ability to set a given seed</li>
+                </ul>
+            </p>
+
+        </div>
+    </div>
+
+        <script src="js/libs/gl-matrix-min.js"></script>
+        <script src="js/rand.js"></script>
+        <script src="js/curves.js"></script>
+        <script src="js/node3d.js"></script>
+        <script src="js/dynamic_model.js"></script>
+        <script src="js/flowers/complex-curve.js"></script>
+        <script src="js/flowers/leaf.js"></script>
+        <script src="js/flowers/petal.js"></script>
+        <script src="js/primitives.js"></script>
+        <script src="js/flowers/stem.js"></script>
+        <script src="js/flowers/lathed-geo.js"></script>
+        <script src="js/flowers/flower-center.js"></script>
+        <script src="js/flowers/flower.js"></script>
+        <script src="js/scene.js"></script>
+        <script src="js/main.js"></script>
+
+
+        
+    </body>
+</html>
